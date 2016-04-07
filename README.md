@@ -57,7 +57,8 @@ TroutBogReads
 |-- listReadFiles1.sh  
 |-- listReadFiles2.sh  
 
-##**3. Prep CHTC SQUID folder for mapping.** Add the .fna file for the combined assembly (hereafter, "coassembly") from Zissou to your squid folder on CHTC. 
+##**Step 3. Prep CHTC SQUID folder for mapping.** 
+Add the .fna file for the combined assembly (hereafter, "coassembly") from Zissou to your squid folder on CHTC. 
 
 Coassembly locations on Zissou are as follows:  
 ```
