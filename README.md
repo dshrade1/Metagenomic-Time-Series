@@ -16,19 +16,19 @@ This is a protocol to map metagenomic reads to a metagenomic coassembly. Steps c
   
 Metagenomic-Time-Series  
 |-- scripts  
-   |-- FastaMLtoSL.py             # called by formatTransfer scripts  
-   |-- fastq2fasta.py             # called by formatTransferTBfastq.sh  
-   |-- formatTransferTBfasta.sh   # formats TB reads (fasta), sends to CHTC  
-   |-- formatTransferTBfastq.sh   # formats TB reads (fastq), sends to CHTC  
-   |-- removesmalls.pl            # called by formatTransferTBfastq.sh  
+|--|-- FastaMLtoSL.py             # called by formatTransfer scripts  
+|--|-- fastq2fasta.py             # called by formatTransferTBfastq.sh  
+|--|-- formatTransferTBfasta.sh   # formats TB reads (fasta), sends to CHTC  
+|--|-- formatTransferTBfastq.sh   # formats TB reads (fastq), sends to CHTC  
+|--|-- removesmalls.pl            # called by formatTransferTBfastq.sh  
 |-- scripts_CHTC  
-   |-- run_bbmap.sh               # executable for mapping in CHTC  
-   |-- run_bbmap.sub              # submit file for mapping in CHTC  
-   |-- listReadFiles1.sh          # creates list of files to map  
-   |-- listReadFiles2.sh          # creates list of files to map  
+|--|-- run_bbmap.sh               # executable for mapping in CHTC  
+|--|-- run_bbmap.sub              # submit file for mapping in CHTC  
+|--|-- listReadFiles1.sh          # creates list of files to map  
+|--|-- listReadFiles2.sh          # creates list of files to map  
 |-- data  
-   |-- coassembly  
-   |-- temp  
+|--|-- coassembly  
+|--|-- temp  
 |-- README.md  
 
 **1b. Make sure the following are installed in Zissou:**
@@ -45,21 +45,21 @@ Metagenomic-Time-Series
 **2c. In CHTC submit node, create a folder for the mapping project.** Here, let's call it **TroutBogReads**. Set it up as follows:  
 
 TroutBogReads  
-|- bbmap_only   # this is a subset the bbmap software. This was from BBMap_35.82.tar.gz; updates have been made since.  
-| |- bbmap.sh  
-| |- build.xml  
-| |- calcmem.sh  
-| |- current    # this is the entire bbmap 'current' folder.  
-| |- jni        # this is the entire bbmap 'jni' folder.  
-|- run_bbmap.sh  
-|- run_bbmap.sub  
-|- TB_Epi_ID.txt  
-|- listReadFiles1.sh  
-|- listReadFiles2.sh  
+|-- bbmap_only   # this is a subset the bbmap software. This was from BBMap_35.82.tar.gz; updates have been made since.  
+|--|-- bbmap.sh  
+|--|-- build.xml  
+|--|-- calcmem.sh  
+|--|-- current    # this is the entire bbmap 'current' folder.  
+|--|-- jni        # this is the entire bbmap 'jni' folder.  
+|-- run_bbmap.sh  
+|-- run_bbmap.sub  
+|-- TB_Epi_ID.txt  
+|-- listReadFiles1.sh  
+|-- listReadFiles2.sh  
 
 ##**3. Prep CHTC SQUID folder for mapping.** Add the .fna file for the combined assembly (hereafter, "coassembly") from Zissou to your squid folder on CHTC.**  
 
-coassembly locations on Zissou:  
+Coassembly locations on Zissou are as follows:  
 ```
 /data_lakes/Metagenomes/TroutBog/coassembly/3300000553/3300000553.a.fna # Trout Bog Hypolimnion, 537M  
 /data_lakes/Metagenomes/TroutBog/coassembly/3300000439/3300000439.a.fna # Trout Bog Epilimnion, 255M  
@@ -83,6 +83,7 @@ scp /home/dgshrader/Metagenomic-Time-Series/data/coassembly/THcoassembly_100perc
 ##**Step 4. Format files in Zissou and transfer them to CHTC.**
 
 There are three types of metagenomic read files in Zissou, and the required formatting is different for each type.  
+
 **(a) fasta files in /data_lakes/Metagenomes/TroutBog/MergedReads-TroutBog/**  
 - These are merged reads.  
 - The text is wrapped and needs unwrapping.  
