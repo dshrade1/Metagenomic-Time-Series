@@ -10,7 +10,7 @@ This is a protocol to map metagenomic reads to a metagenomic coassembly. Steps c
 6. Test mapping in CHTC  
 7. Run mapping in CHTC  
 
-##**Step 1: In Zissou, set up directory for pre-mapping formatting steps**##
+##**Step 1: Set up directory in Zissou for pre-mapping formatting**##
 
 **1a. Pull this repo into your Zissou folder or otherwise set up your Zissou folder the way this repo is structured:**  
   
@@ -32,9 +32,9 @@ Metagenomic-Time-Series
 |-- README.md  
 
 **1b. Make sure the following are installed in Zissou:**
-- Python
-- Perl
-- sshpass
+- Python (I used 2.7)
+- Perl (I used v5.18.2)
+- sshpass (I used v1)
 
 ##**Step 2: Set up directory for mapping in CHTC**
 
@@ -81,7 +81,7 @@ OR
 scp /home/dgshrader/Metagenomic-Time-Series/data/coassembly/THcoassembly_100percent.fna.gz dgshrader@submit-5.chtc.wisc.edu:~/../../squid/dgshrader  
 ```
 
-##**Step 4. Format files in Zissou and transfer them to CHTC.**
+##**Step 4. Format read files in Zissou & transfer them to CHTC**
 
 There are three types of metagenomic read files in Zissou, and the required formatting is different for each type.  
 
@@ -163,29 +163,123 @@ IHXY IHXYem
 ```
 Bring bbmap_only back into the TroutBogReads folder on CHTC:  
 ```
-mv bbmap_only/ TroutBogReads/
+mv bbmap_only/ TroutBogReads/  
 ```
 
-##**Step 6: Test mapping in CHTC**
+##**Step 6: Test mapping in CHTC**  
 
-**6a. Copy the first two lines of readFileList.txt into a document called readFileList_test.txt.** It should look like this:  
+**6a. Find the largest metagenomic read files on CHTC.**  
+
+In CHTC, run maxfilesizes.sh. Then download the output maxfilesizes.txt using Cyberduck. Open with Excel. Sort. Select the largest file names.  
+
+
+
+**6b. Copy the first two lines of readFileList.txt into a document called readFileList_test.txt.** It should look like this:  
+
 ```
-H0586_93745 H0586_93745aa  
-H0586_93745 H0586_93745ab  
+H0596_93745 H0596_93745au
+H0596_93770 H0596_93770an
 ```
 
-Note: Mapping one 16.9-MB read file to 563-MB coassembly takes  
-- 4.03 GB memory
-- 37 MB disk space output
-- 48.5 seconds to run.
-So you'll need to request this much memory.
+**6c. Edit the script "run_bbmap.sub"** to have the last line say  
 
+```
+queue dir,file from readFileList_test.txt
+```
+
+**6d. Run the test mapping: **  
+```
+condor_submit run_bbmap.sh  
+```
+
+
+**6d. Check memory and disk usage.**  
+Within each metagenome's respective folder, there are log and error files for each <20MB piece. Open the log file and scroll to the bottom. This displays your memory and disk usage. Make sure your usage is under the amount you requested! If not, increase the disk and memory limits by editing the request_memory and request_disk lines in run_bbmap.sub. Open the .err files. Make sure othing strange happened (What could happen? See here.)  If you're good, proceed. Note: requesting more memory than needed could make you have to wait longer in the Condor queue, so you want to request enough that your jobs don't fail, but not so much memory that it delays your jobs a bunch in the queue.
+
+##**Step 7:  Run the whole mapping**
+
+**7a. Edit the script "run_bbmap.sub"** to have the last line say  
+
+```
+queue dir,file from readFileList.txt
+```
+
+**7b. Run the whole mapping: **  
+```
+condor_submit run_bbmap.sh  
+```
+
+So you'll be running several mappings in parallel. To test the progress of the mapping, you can type:
+```
+condor_q $USER
+```
+This will list the remaining mappings and their progress.  
+  
+Congratulations! You've mapped the metagenomic reads to the coassembly.
+
+##**Step 8: Check that the mappings worked.**
+Check that the mappings worked right.
+- check the sizes of the bam files
+- use bamfilesizes to do this.
+- check the sizes of the error files.
+- if bam files are noticeably larger or smaller, check on those - was the mapping successful?
+If those smaller ones are broken, you'll need to re-run the smaller ones by copying the names of only those that failed into the readFileList_test.txt, and running a version of run_bbmap that calls readFileList_test.txt.
+
+##**Step 9: Merge the read files into 1 bam file per genome**  
+Samtools is installed on CHTC. Therefore, you can cd to each metageome directory and run the following, editing the name of the metagenome within each directory. So I used variants of the following:  
+
+```
+cd IHXX
+ls # to check there is no merged file in there already
+time samtools merge all_IHXX.bam *.bam
+```
+
+Each merging takes maybe 5 min. Of course, you could do this iteratively, running each mapping directly after one another using a script. However, I would not recommend this because that could tie up the Condor scheduler for a long time, so I suggest breaking up the process and running these lines individually.  
+
+
+
+##** Step 10: Move the merged bam files from their individual folders**  
+
+Move the merged bam files from their home folders to a single folder together.  
+
+Run:  
+
+```
+./move_merged_bam.sh
+```
+
+This moves files to merged_bam.  
+
+Run the following:  
+
+```
+./gzip_bam.sh
+```
+
+This gzips bam files in merged_bam.  
+
+##**Step 11: In Zissou...** 
+
+Run:
+
+nohup ./receive_gz.sh &
+
+This code:  
+- retrieves a gzipped merged mapping file from CHTC
+- stores the file temporarily in Zissou
+- unzips the gzipped file
+- converts bam to sam
+- uses sam file as input into htseq-count, which counts the number of reads mapping to each locus tag.
+- **NOTE!** The input to this script is whatever metagenome mapping files you've listed in readFileList_test.txt. Note this is not the same as the readFileList_test that you used to make run_bbmap.sub work; the difference is that only the 4-letter or 11-letter metagenome code is listed in the text file, not both the code and the names of the metagenome subset files, such as IHPNaa.
+- **NOTE!** Listing all metagenome files in readFileList_test causes problems on Zissou. I recommend running ~8 at a time for maximum effiency while (hopefully) avoiding errors.
+
+Next steps:  
+- describe normalize_counts.R
+
+Additional notes:  
 
 Because the Mendota coassembly is so large (4.2GB), a protocol separate from this one is needed to describe the required testing. There are different. These include:
 Splitting the coassembly into smaller chunks
 Testing for memory when mapping to these smaller chunks.
 Transferring multiple coassembly subsets using scp.
 
-Future:
-Include how long things took.
-Include memory usage.
