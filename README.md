@@ -67,8 +67,10 @@ Coassembly locations on Zissou are as follows:
 /data_lakes/Metagenomes/Mendota/coassembly/3300002835/3300002835.a.fna # Mendota (Epilimnion?), 4.2G  
 ```
 To get coassembly from Zissou to CHTC, first compress the coassembly .fna file and save this compressed file in your personal folder on Zissou:  
+
+
 ```
-gzip -c /data_lakes/Metagenomes/TroutBog/coassembly/3300000553/3300000553.a.fna > /home/dgshrader/Metagenomic-Time-Series/data/coassembly/THcoassembly_100percent.fna.gz #this took ~3min for TB Hypolimnion  
+gzip -c /data_lakes/Metagenomes/TroutBog/coassembly/3300000553/3300000553.a.fna > /home/dgshrader/Metagenomic-Time-Series/data/coassembly/THcoassembly_100percent.fna.gz #this took ~3min for TB Hypolimnion
 ```
 
 You can then transfer the gzipped coassembly by either:  
@@ -204,7 +206,7 @@ Within each metagenome's respective folder, there are log and error files for ea
 queue dir,file from readFileList.txt
 ```
 
-**7b. Run the whole mapping: **  
+**7b. Run the whole mapping**  
 ```
 condor_submit run_bbmap.sh  
 ```
@@ -238,7 +240,7 @@ Each merging takes maybe 5 min. Of course, you could do this iteratively, runnin
 
 
 
-##** Step 10: Move the merged bam files from their individual folders**  
+##**Step 10: Move the merged bam files from their individual folders**  
 
 Move the merged bam files from their home folders to a single folder together.  
 
@@ -258,7 +260,7 @@ Run the following:
 
 This gzips bam files in merged_bam.  
 
-##**Step 11: In Zissou...** 
+##**Step 11: Import bamfiles to Zissou and count reads per gene** 
 
 Run:
 
@@ -269,17 +271,17 @@ This code:
 - stores the file temporarily in Zissou
 - unzips the gzipped file
 - converts bam to sam
-- uses sam file as input into htseq-count, which counts the number of reads mapping to each locus tag.
+- uses sam file as input into htseq-count, which counts the number of reads mapping to each gene.
 - **NOTE!** The input to this script is whatever metagenome mapping files you've listed in readFileList_test.txt. Note this is not the same as the readFileList_test that you used to make run_bbmap.sub work; the difference is that only the 4-letter or 11-letter metagenome code is listed in the text file, not both the code and the names of the metagenome subset files, such as IHPNaa.
 - **NOTE!** Listing all metagenome files in readFileList_test causes problems on Zissou. I recommend running ~8 at a time for maximum effiency while (hopefully) avoiding errors.
+  
+##**Step 12: Quantify reads mapped per COG**
 
-Next steps:  
-- describe normalize_counts.R
-
+This section is under construction. It will describe how to the script **normalize_counts.R** transforms the count files output by htseq-count into a table of normalized COG abundances. Rows of this table are metagenome sample dates, and columns of this table are normalized COG abundances for that date. **R**eads **P**er **K**ilobase of reference gene per **M**illion mapped reads (RPKM) normalizes the read count data and generates an approximation of the relative number of fragments of a particular gene found in a given sample. Normalizing by RPKM enables comparison of COG abundance both within and across samples. x
+  
 Additional notes:  
 
 Because the Mendota coassembly is so large (4.2GB), a protocol separate from this one is needed to describe the required testing. There are different. These include:
-Splitting the coassembly into smaller chunks
-Testing for memory when mapping to these smaller chunks.
-Transferring multiple coassembly subsets using scp.
-
+- Splitting the coassembly into smaller chunks
+- Testing for memory when mapping to these smaller chunks.
+- Transferring multiple coassembly subsets using scp.
