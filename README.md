@@ -9,7 +9,12 @@ This is a protocol to map metagenomic reads to a metagenomic coassembly. Steps c
 5. Prep CHTC submit node for mapping  
 6. Test mapping in CHTC  
 7. Run mapping in CHTC  
-
+8. Verify mapping.  
+9. Merge mapping output by metagenome.  
+10. Compress mapping output for transfer to Zissou.  
+11. Import mapping output to Zissou; count reads per gene.  
+12. Quantify reads mapped per COG annotation.  
+  
 ##**Step 1: Set up directory in Zissou for pre-mapping formatting**##
 
 **1a. Pull this repo into your Zissou folder or otherwise set up your Zissou folder the way this repo is structured:**  
