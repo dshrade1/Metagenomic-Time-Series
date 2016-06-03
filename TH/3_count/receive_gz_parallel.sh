@@ -1,5 +1,7 @@
+# /usr/bin/time --verbose ./receive_gz_parallel.sh
 cd temp
-while read i; do
+import_count() {
+i=$1
 echo "Importing bam file" $i "..."
 sshpass -p "Geraldine2012" scp dgshrader@submit-5.chtc.wisc.edu:~/TroutBogReads/merged_bam_v2/all_v2_$i.bam /home/dgshrader/Metagenomic-Time-Series/TH/3_count/temp
 # only run the following 3 lines if the merged bam files are actually compressed.
@@ -25,7 +27,11 @@ rm sorted_$i.sam
 rm sorted_$i.bam
 #rm reformatted_$i.bam
 rm all_v2_$i.bam
-done < ../"$1"
+}
+export -f import_count
+
+cat ../readFileList_af | parallel -j8 import_count 
+
 #nohup ./receive_gz.sh readFileList_aa &
 #nohup ./receive_gz.sh readFileList_ab &
 #nohup ./receive_gz.sh readFileList_ac &
