@@ -3,6 +3,7 @@
 
 # load libraries
 library(ggplot2)
+library(grDevices)
 
 # user inputs
 wd <- "~/Desktop/Metagenome_TS/0_minid"
@@ -50,9 +51,9 @@ quantify_mapping <- function(mapping_output_dir) { # where 'mapping_output_dir' 
 	# calculate mean values per minid value
 	mean_pct.bases.mapped <- apply(pct.bases_table,2, mean)
 	# make a quick base-R plot to ensure that this is the outcome we want, but don't save it
-	plot(min_id, mean_pct.bases.mapped, main="Mean Percent of Reads or Bases Mapped", xlab="min_id value", ylab="mean percent mapped", ylim=c(0,100))
-	points(min_id, mean_pct.reads.mapped, col="red")
-	legend("topright", c("Reads Mapped", "Bases Mapped"),col=c("black", "red"), pch=1)
+	#### plot(min_id, mean_pct.bases.mapped, main="Mean Percent of Reads or Bases Mapped", xlab="min_id value", ylab="mean percent mapped", ylim=c(0,100))
+	#### points(min_id, mean_pct.reads.mapped, col="red")
+	#### legend("topright", c("Reads Mapped", "Bases Mapped"),col=c("black", "red"), pch=1)
 	return(list(mean_pct.reads.mapped, mean_pct.bases.mapped))
 	rm(mapping_output_dir)
 	setwd(wd)
@@ -65,8 +66,8 @@ setwd(wd)
 p <- ggplot() +
 	geom_point(aes(x = min_id, y = quantify_mapping(percent_reads_dir)[[1]], color = "Percent of All Reads that Mapped"))  +
 	geom_point(aes(x = min_id, y = quantify_mapping(percent_reads_dir)[[2]], color = "Percent of All Bases that Mapped"))  +
-	geom_point(aes(x = min_id, y = quantify_mapping(percent_perfect_dir)[[1]], color = "Percent of Reads that Mapped Perfectly"))  +
-	geom_point(aes(x = min_id, y = quantify_mapping(percent_perfect_dir)[[2]], color = "Percent of Bases that Mapped Perfectly"))  +
+	#geom_point(aes(x = min_id, y = quantify_mapping(percent_perfect_dir)[[1]], color = "Percent of Reads that Mapped Perfectly"))  +
+	#geom_point(aes(x = min_id, y = quantify_mapping(percent_perfect_dir)[[2]], color = "Percent of Bases that Mapped Perfectly"))  +
 	geom_point(aes(x = min_id, y = quantify_mapping(percent_error_dir)[[1]], color = "Percent of Reads that Mapped with Error"))  +
 	geom_point(aes(x = min_id, y = quantify_mapping(percent_error_dir)[[2]], color = "Percent of Bases that Mapped with Error"))  +
 	xlab('BBMap min_id value') +
@@ -74,33 +75,26 @@ p <- ggplot() +
 	labs(color="Value Calculated") + 
 	ggtitle(paste("Mapping Efficiencies of a Random Subset of TH Reads")) +
 	scale_x_continuous(breaks = seq(0.7, 1.0, by=0.01)) + 
-	ylim(0,100)
-	p
-	setwd(wd)
+	ylim(0,100) +
+	theme(axis.text.x = element_text(angle = 45, hjust = 1))
+setwd(wd)
+quartz(width=13)
+p
+quartz.save("select_minid.jpg", type="jpg")
 	
+# optional: find a curve to fit this plot
 
-savePlot <- function(myPlot) {
-        #pdf(paste("Plot_", mapping_output_dir ,".pdf"))
-        pdf("Plot.pdf")
-        print(myPlot)
-        dev.off()
-}
+# x <- min_id
+# y <- mean_pct.reads.mapped
+# x1 <- min_id[which(min_id>0.92)]
+# y1 <- mean_pct.reads.mapped[which(min_id>0.92)]
+# fit4 <- lm(y1~poly(x1,4,raw=T))
+# xx <- seq(0.93,1.0,0.01)
+# plot(x,y,pch=19, main = "Fitting a curve to percent mapped to find optimal min_id value", xlab="% reads mapped", ylab="min_id values tested")
+# lines(xx, predict(fit4, data.frame(x=xx)), col="purple")
 
-	savePlot(p)
-	
-# optional find a curve to fit this plot:
-
-x <- min_id
-y <- mean_pct.reads.mapped
-x1 <- min_id[which(min_id>0.92)]
-y1 <- mean_pct.reads.mapped[which(min_id>0.92)]
-fit4 <- lm(y1~poly(x1,4,raw=T))
-xx <- seq(0.93,1.0,0.01)
-plot(x,y,pch=19, main = "Fitting a curve to percent mapped to find optimal min_id value", xlab="% reads mapped", ylab="min_id values tested")
-lines(xx, predict(fit4, data.frame(x=xx)), col="purple")
-
-x2 <- min_id[which(min_id<=0.92)]
-y2 <- mean_pct.reads.mapped[which(min_id<=0.92)]
-fit2 <- lm(y2~poly(x2, 2, raw=T))
-zz <- seq(0.70,0.92,0.01)
-lines(zz, predict(fit2, data.frame(x=zz)), col="green")
+# x2 <- min_id[which(min_id<=0.92)]
+# y2 <- mean_pct.reads.mapped[which(min_id<=0.92)]
+# fit2 <- lm(y2~poly(x2, 2, raw=T))
+# zz <- seq(0.70,0.92,0.01)
+# lines(zz, predict(fit2, data.frame(x=zz)), col="green")
