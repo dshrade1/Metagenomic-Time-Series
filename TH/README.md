@@ -13,16 +13,16 @@ The main steps, generally, include the following:
 
 To run this protocol, you'll need a few things:  
 
-1. An account with the Center for High-Throughput Computing for
-* High-Throughput Computing node (to perform mapping)
-* Gluster (to store large amounts of data in CHTC)  
+* An account with the Center for High-Throughput Computing for
+- High-Throughput Computing node (to perform mapping)
+- Gluster (to store large amounts of data in CHTC)  
 
-2. A combined assembly of the time series for your sample site of interest
-* in .fna file format
-* associated annotation files (from JGI, contact Sarah Stevens sstevens2@wisc.edu)  
+* A combined assembly of the time series for your sample site of interest
+- in .fna file format
+- associated annotation files (from JGI, contact Sarah Stevens sstevens2@wisc.edu)  
 
-3. A directory of the time series of metagenomic read files for your sample site of interest
-* unassembled, merged reads in fasta or fastq format
-* additionally, a text file or csv of sampling dates for each metagenome  
+* A directory of the time series of metagenomic read files for your sample site of interest
+- unassembled, merged reads in fasta or fastq format
+- additionally, a text file or csv of sampling dates for each metagenome  
 
 
