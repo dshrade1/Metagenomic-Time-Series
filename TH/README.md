@@ -43,8 +43,8 @@ The following are the steps of the protocol in detail. Different steps require d
 ``` 
 condor_submit_dag map.dag
 ```
-This will execute the following steps:
-    *  **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.
+This will execute the following steps:  
+    *  **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.  
     * **Map metagenomic read files to combined assembly.** Once the preprocessing has successfully completed, metagenomic read files are mapped to the coassembly using BBMap software. One directory is created for each metagenome, and .bam output files are sent to each metagenome's mapping directory.
   
 * 6\. Post-process mapping output. *Note: I intend to make these steps automated as a part of the dag execution.* From the map directory, do the following:
