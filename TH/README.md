@@ -23,4 +23,7 @@ To run this protocol, you'll need a few things:
     *  unassembled, merged reads in fasta or fastq format
     * additionally, a text file or csv of sampling dates for each metagenome
 
+## Protocol
+
+# CHTC
 
