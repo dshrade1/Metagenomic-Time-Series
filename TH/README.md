@@ -83,18 +83,18 @@ This code:
   
 ### on your local machine
 
-1. Clone this GitHub repository to your local machine.  
-2. Run count_features.R. This will read the htseq-count read count files into R and separate out mapped reads from unmapped reads.  
-3. Run counts_analysis.R. This will answer some relevant questions about the counts output, generating and saving descriptive plots, such as:
-- What is the overall proportion of reads that mapped as CDS, repeat_region, rRNA, tRNA, etc.?
-- What is the total % of reads mapped in each metagenome?
-- Which dates have the highest % of total reads mapping, and which have the lowest?
-- How many reads mapped as each feature type on each date? 
-- Are the ratios of [CDS + aligned noncoding]:total reads consistent?
-- For samples taken on the same date, how similar are the percents of reads mapped?
-4. Run normalize_counts.R This will normalize read counts by RPKM.  
-5. Run normalize_analysis.R This will answer questions such as:  
-- What are the sums of the RPKM values per metagenome?  
-- Are they consistent?
-6. Run compare_annotations.R. This will help you identify which annotation scheme (COG, KO, EC, Pfam, etc.) is most appropriate for the data set you are using.
-7. Run annotate_genes.R. This will allow you to choose an annotation scheme, identify the "best" annotation for each locus tag (first by E-value, then by bit score, then by %identity*alignment_length), then annotate each locus tag with that best annotation. The RPKM values for all genes with a given annotation are summed, so that each, say, COG, has 1 RPKM value per date. This script creates a time series of RPKM values for each, say, COG, in the annotation file
+* 1\. Clone this GitHub repository to your local machine.  
+* 2\.  Run count_features.R. This will read the htseq-count read count files into R and separate out mapped reads from unmapped reads.  
+* 3\. Run counts_analysis.R. This will answer some relevant questions about the counts output, generating and saving descriptive plots, such as:
+    * What is the overall proportion of reads that mapped as CDS, repeat_region, rRNA, tRNA, etc.?
+    * What is the total % of reads mapped in each metagenome?
+    * Which dates have the highest % of total reads mapping, and which have the lowest?
+    * How many reads mapped as each feature type on each date? 
+    * Are the ratios of [CDS + aligned noncoding]:total reads consistent?
+    * For samples taken on the same date, how similar are the percents of reads mapped?
+* 4\. Run normalize_counts.R This will normalize read counts by RPKM.  
+* 5\.  Run normalize_analysis.R This will answer questions such as:  
+    * What are the sums of the RPKM values per metagenome?  
+    * Are they consistent?
+* 6\.  Run compare_annotations.R. This will help you identify which annotation scheme (COG, KO, EC, Pfam, etc.) is most appropriate for the data set you are using.
+* 7\.  Run annotate_genes.R. This will allow you to choose an annotation scheme, identify the "best" annotation for each locus tag (first by E-value, then by bit score, then by %identity*alignment_length), then annotate each locus tag with that best annotation. The RPKM values for all genes with a given annotation are summed, so that each, say, COG, has 1 RPKM value per date. This script creates a time series of RPKM values for each, say, COG, in the annotation file
