@@ -33,13 +33,20 @@ The following are the steps of the protocol in detail. Different steps require d
 * 1\. Place the required input data in the appropriate locations. Cyberduck is a handy SFTP client for doing this. This means: 
     *  coassembly file (zipped) in your SQUID directory
     *  directory of merged metagenomic reads in your Gluster directory
+    *  have the python, samtools, htseq-count, and other software installed in the submit node.
 * 2\. Clone the repo Metagenomic-Time-Series-CHTC into your home directory on the CHTC submit node. This contains: 
     *  one directory for each sample site (TH = Trout Bog Hypolimnion, TE = TB Epi, ME = Mendota)
     *  folders containing scripts for preprocessing and mapping specific to that sample site
     *  map.dag script in each directory
-* 3\. Move to the directory for your sample site of interest.
-* 4\. If you wish to adjust mapping parameters, open the .dag file. Edit the value in the "VAR" line(s). For example, to increase the minimum percent identity threshold for mapping with BBMap, change *VAR mapping minid="76"* to *VAR mapping minid="92"*. Also edit the name of your squid directory and the name of the directory in Gluster containing your metagenome reads. *Note to self: make these options available in dag file.*
-* 5\. Submit the dag file
+* 3\. Update your $PATH in the submit node so Condor looks for the version of Python YOU installed, rather than its default version, first.
+```
+cd ~/Metagenomic-Time-Series-CHTC/global/
+export PATH=$(pwd)/python/bin:$PATH
+echo $PATH
+```
+* 4\. Move to the directory for your sample site of interest.
+* 5\. If you wish to adjust mapping parameters, open the .dag file. Edit the value in the "VAR" line(s). For example, to increase the minimum percent identity threshold for mapping with BBMap, change *VAR mapping minid="76"* to *VAR mapping minid="92"*. Also edit the name of your squid directory and the name of the directory in Gluster containing your metagenome reads. *Note to self: make these options available in dag file.*
+* 6\. Submit the dag file
 ``` 
 condor_submit_dag map.dag
 ```
@@ -47,7 +54,7 @@ This will execute the following steps:
     *  **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.  
     * **Map metagenomic read files to combined assembly.** Once the preprocessing has successfully completed, metagenomic read files are mapped to the coassembly using BBMap software. One directory is created for each metagenome, and .bam output files are sent to each metagenome's mapping directory.
   
-* 6\. Post-process mapping output. *Note: I intend to make these steps automated as a part of the dag execution.* From the map directory, do the following:
+* 7\. Post-process mapping output. *Note: I intend to make these steps automated as a part of the dag execution.* From the map directory, do the following:
 
 Merge bam files for each directory:
 ```
