@@ -53,38 +53,7 @@ condor_submit_dag map.dag
 This will execute the following steps:  
     *  **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.  
     * **Map metagenomic read files to combined assembly.** Once the preprocessing has successfully completed, metagenomic read files are mapped to the coassembly using BBMap software. One directory is created for each metagenome, and .bam output files are sent to each metagenome's mapping directory.
-  
-* 7\. Post-process mapping output. *Note: I intend to make these steps automated as a part of the dag execution.* From the map directory, do the following:
-
-Merge bam files for each directory:
-```
-./merge_bam.sh
-```
-Move the merged bam files from their home folders to a single directory, merged_bam:  
-
-```
-./move_merged_bam.sh
-```
-
-Gzip bam files in merged_bam:   
-```
-./gzip_bam.sh
-```
-
-### on Zissou
-*Note: I intend to adjust these steps to be performed in CHTC as part of the dag execution, rather than on Zissou. But these are the steps currently.*
-
-* 1\. Import bamfiles to Zissou and count reads per gene: 
-```
-nohup ./receive_gz.sh &
-```
-
-This code:  
-- retrieves a gzipped merged mapping file from CHTC
-- stores the file temporarily in Zissou
-- unzips the gzipped file
-- converts bam to sam
-- uses sam file as input into htseq-count, which counts the number of reads mapping to each gene.
+    * **Count the number of reads that mapped to each locus tag in the combined assembly.** The Python module HTSeq-count is called to count the number of reads that mapped to each locus tag whether those are coding sequences, repeat regions, tRNA, or rRNA.
 
 * 2\. Transfer the output directory of reads counts to your local machine. 
   
