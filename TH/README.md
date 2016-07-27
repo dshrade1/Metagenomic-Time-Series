@@ -51,9 +51,9 @@ echo $PATH
 condor_submit_dag map.dag
 ```
 This will execute the following steps:  
-    *  **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.  
-    * **Map metagenomic read files to combined assembly.** Once the preprocessing has successfully completed, metagenomic read files are mapped to the coassembly using BBMap software. One directory is created for each metagenome, and .bam output files are sent to each metagenome's mapping directory.
-    * **Count the number of reads that mapped to each locus tag in the combined assembly.** The Python module HTSeq-count is called to count the number of reads that mapped to each locus tag whether those are coding sequences, repeat regions, tRNA, or rRNA.
+    **Preprocess metagenomic read files for mapping.** For fasta files, line-wrapping is removed, and each metagenomic read file is split into many <20MB pieces so that they can be transported to CHTC's compute nodes for faster mapping down the line. Additional formatting steps are performed for fastq files.  
+    **Map metagenomic read files to combined assembly.** Once the preprocessing has successfully completed, metagenomic read files are mapped to the coassembly using BBMap software. One directory is created for each metagenome, and .bam output files are sent to each metagenome's mapping directory.  
+    **Count the number of reads that mapped to each locus tag in the combined assembly.** The Python module HTSeq-count is called to count the number of reads that mapped to each locus tag whether those are coding sequences, repeat regions, tRNA, or rRNA.
 
 * 2\. Transfer the output directory of reads counts to your local machine. 
   
